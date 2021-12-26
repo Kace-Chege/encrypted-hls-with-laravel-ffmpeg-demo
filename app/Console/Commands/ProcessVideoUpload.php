@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use FFMpeg\Format\Video\X264;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
+use ProtoneMedia\LaravelFFMpeg\Exporters\HLSExporter;
 use ProtoneMedia\LaravelFFMpeg\Exporters\HLSVideoFilters;
 use ProtoneMedia\LaravelFFMpeg\Support\FFMpeg;
 
@@ -38,6 +40,9 @@ class ProcessVideoUpload extends Command
         FFMpeg::fromDisk('uploads')
             ->open('redfield.mp4')
             ->exportForHLS()
+            ->withRotatingEncryptionKey(function ($filename, $contents) {
+                Storage::disk('secrets')->put($filename, $contents);
+            })
             ->addFormat($lowFormat, function (HLSVideoFilters $filters) {
                 $filters->resize(1280, 720);
             })
