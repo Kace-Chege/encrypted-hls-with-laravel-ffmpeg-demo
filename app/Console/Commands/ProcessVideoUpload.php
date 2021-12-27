@@ -40,13 +40,13 @@ class ProcessVideoUpload extends Command
         FFMpeg::fromDisk('uploads')
             ->open('redfield.mp4')
             ->exportForHLS()
-            ->withRotatingEncryptionKey(function ($filename, $contents) {
-                Storage::disk('secrets')->put($filename, $contents);
-            })
+//            ->withRotatingEncryptionKey(function ($filename, $contents) {
+//                Storage::disk('secrets')->put($filename, $contents);
+//            })
             ->addFormat($lowFormat, function (HLSVideoFilters $filters) {
                 $filters->resize(1280, 720);
             })
-            ->addFormat($highFormat)
+//            ->addFormat($highFormat)
             ->onProgress(function ($progress) {
                 $this->info("Progress: {$progress}%");
             })
